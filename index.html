@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAO1 — Own Together. Decide Together. Build Together.</title>
+    <meta name="description" content="Tools for shared ownership and collective decision-making. No wallets. No gas fees. Just tap and participate.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --surface-2: #1e1e1e;
+            --border: #2a2a2a;
+            --text: #e8e8e8;
+            --text-secondary: #888;
+            --accent: #3b82f6;
+            --accent-dim: rgba(59, 130, 246, 0.1);
+            --green: #22c55e;
+            --green-dim: rgba(34, 197, 94, 0.1);
+            --amber: #f59e0b;
+            --amber-dim: rgba(245, 158, 11, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+        /* Nav */
+        nav {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+        }
+        nav .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .logo span { color: var(--accent); }
+        nav a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; margin-left: 32px; transition: color 0.2s; }
+        nav a:hover { color: var(--text); }
+
+        /* Hero */
+        .hero {
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+        .hero-badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent);
+            background: var(--accent-dim);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 6px 16px;
+            border-radius: 100px;
+            margin-bottom: 32px;
+            letter-spacing: 0.05em;
+        }
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin: 0 auto 48px;
+            line-height: 1.7;
+        }
+
+        /* How it works */
+        .how-it-works {
+            padding: 80px 0;
+            border-top: 1px solid var(--border);
+        }
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 48px;
+        }
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .step {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            transition: border-color 0.2s;
+        }
+        .step:hover { border-color: var(--accent); }
+        .step-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+        .step h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .step p { color: var(--text-secondary); font-size: 0.9375rem; }
+
+        /* Demo */
+        .demo-section {
+            padding: 80px 0;
+            border-top: 1px solid var(--border);
+        }
+        .phone-demo {
+            max-width: 380px;
+            margin: 0 auto;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        .phone-header {
+            background: var(--surface-2);
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .phone-header .dot {
+            width: 10px; height: 10px;
+            background: var(--green);
+            border-radius: 50%;
+        }
+        .phone-header span {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        .phone-body { padding: 24px 20px; }
+        .sms-bubble {
+            background: var(--accent-dim);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 16px 16px 16px 4px;
+            padding: 16px;
+            margin-bottom: 16px;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+        }
+        .sms-bubble.system { background: var(--surface-2); border-color: var(--border); }
+        .vote-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .vote-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            border: 2px solid;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .vote-btn.yes {
+            background: var(--green-dim);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: var(--green);
+        }
+        .vote-btn.yes:hover { background: var(--green); color: #000; }
+        .vote-btn.no {
+            background: transparent;
+            border-color: var(--border);
+            color: var(--text-secondary);
+        }
+        .vote-btn.no:hover { border-color: var(--text-secondary); color: var(--text); }
+        .vote-result {
+            display: none;
+            text-align: center;
+            padding: 16px;
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        /* Projects */
+        .projects {
+            padding: 80px 0;
+            border-top: 1px solid var(--border);
+        }
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .project-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            transition: border-color 0.2s;
+        }
+        .project-card:hover { border-color: var(--accent); }
+        .project-tag {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            letter-spacing: 0.05em;
+        }
+        .tag-active { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .tag-building { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .tag-culture { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .project-card h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; }
+        .project-card .location { font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 12px; }
+        .project-card p { color: var(--text-secondary); font-size: 0.9375rem; line-height: 1.6; }
+        .project-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+        .stat { }
+        .stat-value { font-weight: 600; font-size: 1.125rem; }
+        .stat-label { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
+
+        /* Flywheel */
+        .flywheel {
+            padding: 80px 0;
+            border-top: 1px solid var(--border);
+        }
+        .flywheel-steps {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2px;
+        }
+        .fw-step {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 20px 24px;
+            background: var(--surface);
+            border-radius: 2px;
+        }
+        .fw-step:first-child { border-radius: 12px 12px 2px 2px; }
+        .fw-step:last-child { border-radius: 2px 2px 12px 12px; }
+        .fw-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent);
+            min-width: 28px;
+        }
+        .fw-step strong { font-weight: 600; margin-right: 8px; }
+        .fw-step span { color: var(--text-secondary); font-size: 0.9375rem; }
+        .fw-arrow {
+            text-align: center;
+            color: var(--border);
+            font-size: 1.25rem;
+            padding: 4px 0;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+        footer p { color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 8px; }
+        footer a { color: var(--accent); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+        .footer-quote {
+            font-style: italic;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-top: 24px;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 640px) {
+            .hero { padding: 80px 0 60px; }
+            .steps { grid-template-columns: 1fr; }
+            .project-grid { grid-template-columns: 1fr; }
+            nav a { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="container">
+        <div class="logo">DAO<span>1</span></div>
+        <div>
+            <a href="#how">How it works</a>
+            <a href="#projects">Projects</a>
+            <a href="#vision">Vision</a>
+            <a href="mailto:dane@dao1.app">Contact</a>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">Building in the open</div>
+        <h1>Own together.<br>Decide together.<br>Build together.</h1>
+        <p>Tools for shared ownership and collective decision-making. No wallets. No gas fees. No computer science degree required. Just tap and participate.</p>
+    </div>
+</section>
+
+<section class="how-it-works" id="how">
+    <div class="container">
+        <div class="section-label">How it works</div>
+        <h2>Simple enough for anyone</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">01</div>
+                <h3>You get a link</h3>
+                <p>No app to download. No wallet to set up. No seed phrase to memorize. Just a link — in a text, an email, or a QR code.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">02</div>
+                <h3>You participate</h3>
+                <p>Vote on a community decision. Track your investment. See where donations go. Everything in plain language, one tap at a time.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">03</div>
+                <h3>It just works</h3>
+                <p>Blockchain handles the trust and the math underneath. You never see it. Your ownership is recorded, your vote counts, your share is tracked. Automatically.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="demo-section" id="demo">
+    <div class="container">
+        <div class="section-label">Live demo</div>
+        <h2>This is what governance looks like</h2>
+        <div class="phone-demo">
+            <div class="phone-header">
+                <div class="dot"></div>
+                <span>DAO1 • Hotel Brendle Community</span>
+            </div>
+            <div class="phone-body">
+                <div class="sms-bubble system">
+                    📋 <strong>Community Vote</strong><br>
+                    Proposal #12: Expand the lobby seating area and add a coffee station for residents.
+                </div>
+                <div class="sms-bubble">
+                    Budget: $2,400 from community fund<br>
+                    Timeline: 2 weeks<br>
+                    Current vote: 18 yes, 3 no
+                </div>
+                <div id="vote-area">
+                    <div class="vote-buttons">
+                        <button class="vote-btn yes" onclick="castVote('yes')">✓ Yes</button>
+                        <button class="vote-btn no" onclick="castVote('no')">✗ No</button>
+                    </div>
+                </div>
+                <div class="vote-result" id="vote-result">
+                    ✓ Vote recorded. Thanks for participating.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="projects" id="projects">
+    <div class="container">
+        <div class="section-label">What we're building</div>
+        <h2>Real projects. Real people. Real ownership.</h2>
+        <div class="project-grid">
+            <div class="project-card">
+                <span class="project-tag tag-active">Active</span>
+                <h3>Hotel Brendle</h3>
+                <div class="location">Robstown, Texas</div>
+                <p>A 67-room historic hotel — the birthplace of Texas Hold'em. Housing people who need it most while building long-term value. Revenue-generating from day one.</p>
+                <div class="project-stats">
+                    <div class="stat">
+                        <div class="stat-value">67</div>
+                        <div class="stat-label">Rooms</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">27</div>
+                        <div class="stat-label">Occupied</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">$6.2M</div>
+                        <div class="stat-label">Post-reno value</div>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-tag tag-building">Building</span>
+                <h3>Homestead San Marcos</h3>
+                <div class="location">Kingsbury, Texas</div>
+                <p>73 acres becoming a sustainable community. One-acre home tracts, RV sites, community gardens, livestock, and shared agricultural spaces. Affordable living done right.</p>
+                <div class="project-stats">
+                    <div class="stat">
+                        <div class="stat-value">73</div>
+                        <div class="stat-label">Acres</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">29</div>
+                        <div class="stat-label">Home tracts</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">110</div>
+                        <div class="stat-label">RV sites</div>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-tag tag-active">Active</span>
+                <h3>Robstown House of Prayer</h3>
+                <div class="location">Robstown, Texas</div>
+                <p>A historic church restored as a food bank, worship center, and community anchor. Funded by the community, transparent to the community.</p>
+                <div class="project-stats">
+                    <div class="stat">
+                        <div class="stat-value">$120K</div>
+                        <div class="stat-label">Goal</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">Active</div>
+                        <div class="stat-label">Fundraising</div>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-tag tag-culture">Culture</span>
+                <h3>SpaceCamp TX</h3>
+                <div class="location">Texas</div>
+                <p>Education, enthusiasm, speakers, and space industry recruiting — all in one event for all ages. Building the community that builds the future.</p>
+            </div>
+            <div class="project-card">
+                <span class="project-tag tag-culture">Culture</span>
+                <h3>Deep Tech Stir Fry</h3>
+                <div class="location">City to city</div>
+                <p>A roving event series for the brightest minds in any room. High-brow conversation. Low-ego energy. Ideas that actually matter.</p>
+            </div>
+            <div class="project-card">
+                <span class="project-tag tag-active">Active</span>
+                <h3>CBBTX</h3>
+                <div class="location">Coastal Bend, Texas</div>
+                <p>Construction, demolition, renovation. The labor engine behind everything we build. Real work, real crews, real results.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="flywheel" id="vision">
+    <div class="container">
+        <div class="section-label">The bigger picture</div>
+        <h2>Everything connects</h2>
+        <div class="flywheel-steps">
+            <div class="fw-step">
+                <div class="fw-num">01</div>
+                <div><strong>Capture demand</strong> <span>— People need things built, torn down, renovated</span></div>
+            </div>
+            <div class="fw-step">
+                <div class="fw-num">02</div>
+                <div><strong>Automate estimates</strong> <span>— AI processes photos and generates bids</span></div>
+            </div>
+            <div class="fw-step">
+                <div class="fw-num">03</div>
+                <div><strong>Route the work</strong> <span>— Right job to the right crew, automatically</span></div>
+            </div>
+            <div class="fw-step">
+                <div class="fw-num">04</div>
+                <div><strong>Generate revenue</strong> <span>— Construction cash flow funds development</span></div>
+            </div>
+            <div class="fw-step">
+                <div class="fw-num">05</div>
+                <div><strong>Build communities</strong> <span>— Hotels, homesteads, sustainable housing</span></div>
+            </div>
+            <div class="fw-step">
+                <div class="fw-num">06</div>
+                <div><strong>Create culture</strong> <span>— Events, food banks, gardens, gatherings</span></div>
+            </div>
+            <div class="fw-step">
+                <div class="fw-num">07</div>
+                <div><strong>Enable participation</strong> <span>— Anyone can own, vote, and contribute</span></div>
+            </div>
+            <div class="fw-step">
+                <div class="fw-num">08</div>
+                <div><strong>Scale the model</strong> <span>— More cities. Sustainable development. Eventually, space.</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="logo" style="margin-bottom: 24px;">DAO<span>1</span></div>
+        <p><a href="mailto:dane@dao1.app">dane@dao1.app</a></p>
+        <p>Built in Texas. Building everywhere.</p>
+        <div class="footer-quote">"Flawed like all creatures. Doing our best like everyone. Building something worth building."</div>
+    </div>
+</footer>
+
+<script>
+function castVote(choice) {
+    document.getElementById('vote-area').style.display = 'none';
+    document.getElementById('vote-result').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
