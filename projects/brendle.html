@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Brendle — DAO1 Project</title>
+    <meta name="description" content="67-room historic hotel in Robstown, TX. Birthplace of Texas Hold'em. Making money and housing people who need it most.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --surface-2: #1e1e1e;
+            --border: #2a2a2a;
+            --text: #e8e8e8;
+            --text-secondary: #888;
+            --accent: #3b82f6;
+            --green: #22c55e;
+            --green-dim: rgba(34, 197, 94, 0.08);
+            --amber: #f59e0b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+
+        nav {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        nav .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 700; text-decoration: none; color: var(--text); }
+        .logo span { color: var(--accent); }
+        .back { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; }
+        .back:hover { color: var(--text); }
+
+        .hero { padding: 80px 0 40px; }
+        .tag {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            background: rgba(34, 197, 94, 0.08);
+            color: var(--green);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 8px; }
+        .location { color: var(--text-secondary); font-size: 1.125rem; margin-bottom: 24px; }
+        .lead { font-size: 1.125rem; color: var(--text-secondary); line-height: 1.8; }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin: 40px 0;
+        }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .stat-card .value { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+        .stat-card .label { font-size: 0.75rem; color: var(--text-secondary); }
+
+        section { padding: 40px 0; }
+        h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 16px; }
+        p { color: var(--text-secondary); margin-bottom: 16px; line-height: 1.8; }
+
+        .phase {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 16px;
+        }
+        .phase-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .phase-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent);
+            background: rgba(59, 130, 246, 0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        .phase h3 { font-size: 1.125rem; font-weight: 600; }
+        .phase p { font-size: 0.9375rem; }
+        .phase .numbers {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .phase .numbers .n-value { font-weight: 600; }
+        .phase .numbers .n-label { font-size: 0.75rem; color: var(--text-secondary); }
+
+        .mission {
+            background: var(--surface);
+            border-left: 3px solid var(--amber);
+            padding: 24px;
+            border-radius: 0 12px 12px 0;
+            margin: 40px 0;
+        }
+        .mission h3 { font-size: 1.125rem; margin-bottom: 8px; color: var(--amber); }
+        .mission p { font-size: 0.9375rem; margin-bottom: 0; }
+
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+        footer p { font-size: 0.875rem; color: var(--text-secondary); }
+        footer a { color: var(--accent); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="container">
+        <a href="../index.html" class="logo">DAO<span>1</span></a>
+        <a href="../index.html" class="back">← All projects</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="hero">
+        <span class="tag">Active — Revenue Generating</span>
+        <h1>Hotel Brendle</h1>
+        <div class="location">Robstown, Texas</div>
+        <p class="lead">
+            A 67-room historic hotel — the birthplace of Texas Hold'em. Currently generating revenue while providing housing for people rebuilding their lives. Undergoing phased renovation with a projected after-repair value of $6.2 million.
+        </p>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="value">67</div>
+            <div class="label">Total Rooms</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">27</div>
+            <div class="label">Currently Occupied</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">$17.5K</div>
+            <div class="label">Monthly Revenue</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">$6.2M</div>
+            <div class="label">Post-Reno Value</div>
+        </div>
+    </div>
+
+    <div class="mission">
+        <h3>More than a hotel</h3>
+        <p>Hotel Brendle isn't just an investment — it's a place where people who were on the streets can find a room, get stable, and start rebuilding their lives. It generates real revenue while doing real good. That's not a contradiction. That's the model.</p>
+    </div>
+
+    <section>
+        <h2>Renovation Plan</h2>
+        <div class="phase">
+            <div class="phase-header">
+                <span class="phase-num">Phase 1</span>
+                <h3>Structural + 31 Rooms</h3>
+            </div>
+            <p>Roof replacement, foundation stabilization, demolition/cleanup, and renovation of 31 rooms to $750/month standard.</p>
+            <div class="numbers">
+                <div><div class="n-value">$200K</div><div class="n-label">Renovation Cost</div></div>
+                <div><div class="n-value">31</div><div class="n-label">Rooms</div></div>
+                <div><div class="n-value">$1.3-2M</div><div class="n-label">Refinance Value</div></div>
+                <div><div class="n-value">4.20</div><div class="n-label">DSCR</div></div>
+            </div>
+        </div>
+        <div class="phase">
+            <div class="phase-header">
+                <span class="phase-num">Phase 2</span>
+                <h3>Remaining 36 Rooms</h3>
+            </div>
+            <p>Full renovation of remaining units. All 67 rooms at $750/month. Property stabilized for long-term hold or exit.</p>
+            <div class="numbers">
+                <div><div class="n-value">$232K</div><div class="n-label">Renovation Cost</div></div>
+                <div><div class="n-value">36</div><div class="n-label">Rooms</div></div>
+                <div><div class="n-value">$6.2M</div><div class="n-label">Full Refinance</div></div>
+                <div><div class="n-value">5.97</div><div class="n-label">DSCR</div></div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>The Numbers</h2>
+        <p>Total acquisition + renovation: <strong>$658K</strong>. Projected after-repair value: <strong>$6.2M</strong>. That's a <strong>473% ROI</strong> over 5 years with debt service coverage ratios that would make any lender comfortable.</p>
+        <p>At full occupancy with all 67 rooms at $750/month: <strong>$495,600 net annual cash flow</strong> after expenses. Break-even at just 11 rooms (17% occupancy).</p>
+        <p>This isn't speculative. 27 rooms are rented today. The hotel is generating revenue right now.</p>
+    </section>
+
+    <section>
+        <h2>History</h2>
+        <p>Hotel Brendle sits in Robstown, Texas — a small city with an outsized claim to fame. This is where Texas Hold'em was born. The hotel carries that heritage, and the renovation plan honors it while building something modern and sustainable.</p>
+    </section>
+</div>
+
+<footer>
+    <div class="container">
+        <p><a href="mailto:dane@dao1.app">dane@dao1.app</a> · <a href="../index.html">dao1.app</a></p>
+    </div>
+</footer>
+
+</body>
+</html>
