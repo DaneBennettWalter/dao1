@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAO1 — Vote</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --surface-2: #1e1e1e;
+            --border: #2a2a2a;
+            --text: #e8e8e8;
+            --text-secondary: #888;
+            --accent: #3b82f6;
+            --green: #22c55e;
+            --green-dim: rgba(34, 197, 94, 0.08);
+            --red: #ef4444;
+            --red-dim: rgba(239, 68, 68, 0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .vote-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .vote-header {
+            padding: 24px 28px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .vote-header .org {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            color: var(--accent);
+        }
+        .vote-header .proposal-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background: var(--surface-2);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .vote-body { padding: 28px; }
+
+        .vote-title {
+            font-size: 1.375rem;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+
+        .vote-description {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .vote-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .detail {
+            background: var(--surface-2);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+        .detail-label {
+            font-size: 0.6875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+        .detail-value {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* Progress bar */
+        .vote-progress {
+            margin-bottom: 28px;
+        }
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.8125rem;
+        }
+        .progress-labels .yes { color: var(--green); }
+        .progress-labels .no { color: var(--text-secondary); }
+        .progress-bar {
+            height: 8px;
+            background: var(--surface-2);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--green);
+            border-radius: 100px;
+            transition: width 0.5s ease;
+        }
+        .progress-meta {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Buttons */
+        .vote-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .vote-btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 14px;
+            border: 2px solid;
+            font-size: 1.0625rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .vote-btn.yes {
+            background: var(--green-dim);
+            border-color: rgba(34, 197, 94, 0.25);
+            color: var(--green);
+        }
+        .vote-btn.yes:hover {
+            background: var(--green);
+            border-color: var(--green);
+            color: #000;
+            transform: translateY(-1px);
+        }
+        .vote-btn.no {
+            background: var(--red-dim);
+            border-color: rgba(239, 68, 68, 0.15);
+            color: var(--text-secondary);
+        }
+        .vote-btn.no:hover {
+            border-color: var(--red);
+            color: var(--red);
+            transform: translateY(-1px);
+        }
+
+        /* Confirmed state */
+        .vote-confirmed {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .vote-confirmed .checkmark {
+            width: 56px;
+            height: 56px;
+            background: var(--green-dim);
+            border: 2px solid rgba(34, 197, 94, 0.25);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.5rem;
+        }
+        .vote-confirmed h3 {
+            font-size: 1.125rem;
+            margin-bottom: 8px;
+        }
+        .vote-confirmed p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .vote-footer {
+            padding: 16px 28px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+        .vote-footer a {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-decoration: none;
+        }
+        .vote-footer a:hover { color: var(--text); }
+
+        /* Powered by */
+        .powered-by {
+            margin-top: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+        .powered-by span { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div class="vote-card">
+    <div class="vote-header">
+        <div class="org">Hotel Brendle Community</div>
+        <div class="proposal-num">#012</div>
+    </div>
+
+    <div class="vote-body">
+        <h2 class="vote-title">Expand lobby seating and add a coffee station</h2>
+        <p class="vote-description">
+            Add comfortable seating for 8 more people in the lobby area and install a self-serve coffee station with a commercial brewer, cups, and supplies. Available to all residents 6 AM–10 PM daily.
+        </p>
+
+        <div class="vote-details">
+            <div class="detail">
+                <div class="detail-label">Budget</div>
+                <div class="detail-value">$2,400</div>
+            </div>
+            <div class="detail">
+                <div class="detail-label">Source</div>
+                <div class="detail-value">Community Fund</div>
+            </div>
+            <div class="detail">
+                <div class="detail-label">Timeline</div>
+                <div class="detail-value">2 weeks</div>
+            </div>
+            <div class="detail">
+                <div class="detail-label">Closes</div>
+                <div class="detail-value" id="closes-date">Feb 14</div>
+            </div>
+        </div>
+
+        <div class="vote-progress">
+            <div class="progress-labels">
+                <span class="yes">Yes — 18</span>
+                <span class="no">No — 3</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 85.7%"></div>
+            </div>
+            <div class="progress-meta">21 of 27 residents voted · Passes at simple majority</div>
+        </div>
+
+        <div id="vote-actions" class="vote-actions">
+            <button class="vote-btn yes" onclick="castVote('yes')">✓ Yes</button>
+            <button class="vote-btn no" onclick="castVote('no')">✗ No</button>
+        </div>
+
+        <div id="vote-confirmed" class="vote-confirmed">
+            <div class="checkmark">✓</div>
+            <h3>Vote recorded</h3>
+            <p>Thanks for participating. You'll get a notification when voting closes.</p>
+        </div>
+    </div>
+
+    <div class="vote-footer">
+        <a href="index.html">Powered by DAO1</a>
+    </div>
+</div>
+
+<div class="powered-by">DAO<span>1</span></div>
+
+<script>
+function castVote(choice) {
+    const actions = document.getElementById('vote-actions');
+    const confirmed = document.getElementById('vote-confirmed');
+    const progress = document.getElementById('progress');
+
+    actions.style.display = 'none';
+    confirmed.style.display = 'block';
+
+    if (choice === 'yes') {
+        progress.style.width = '86.4%'; // 19/22
+    } else {
+        progress.style.width = '81.8%'; // 18/22
+    }
+}
+</script>
+
+</body>
+</html>
