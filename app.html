@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAO1 — Governance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --surface-2: #1e1e1e;
+            --border: #2a2a2a;
+            --text: #e8e8e8;
+            --muted: #888;
+            --accent: #3b82f6;
+            --green: #22c55e;
+            --red: #ef4444;
+            --amber: #f59e0b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* NAV */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+        }
+        .nav-brand {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .nav-right { display: flex; gap: 1rem; align-items: center; }
+        .nav-user {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+        
+        /* LAYOUT */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* AUTH SCREEN */
+        .auth-screen {
+            max-width: 420px;
+            margin: 4rem auto;
+            padding: 2rem;
+        }
+        .auth-screen h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .auth-screen p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        .org-picker {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+        .org-card {
+            padding: 1rem 1.25rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .org-card:hover { border-color: var(--accent); }
+        .org-card.selected { border-color: var(--accent); background: rgba(59,130,246,0.08); }
+        .org-card h3 { font-size: 1rem; margin-bottom: 0.25rem; }
+        .org-card p { color: var(--muted); font-size: 0.8rem; margin: 0; }
+
+        /* FORMS */
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.4rem;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        textarea { resize: vertical; min-height: 100px; }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #2563eb; }
+        .btn-success { background: var(--green); color: white; }
+        .btn-success:hover { background: #16a34a; }
+        .btn-danger { background: var(--red); color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-ghost {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+        .btn-ghost:hover { border-color: var(--accent); color: var(--text); }
+        .btn-sm { padding: 0.5rem 1rem; font-size: 0.8rem; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .tab {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab:hover { color: var(--text); }
+        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+        /* PROPOSAL LIST */
+        .proposal-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .proposal-card {
+            padding: 1.25rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .proposal-card:hover { border-color: var(--accent); }
+        .proposal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        .proposal-title { font-size: 1rem; font-weight: 600; }
+        .proposal-meta {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.25rem;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .status-active { background: rgba(59,130,246,0.15); color: var(--accent); }
+        .status-passed { background: rgba(34,197,94,0.15); color: var(--green); }
+        .status-failed { background: rgba(239,68,68,0.15); color: var(--red); }
+        .status-draft { background: rgba(136,136,136,0.15); color: var(--muted); }
+
+        /* VOTE BAR */
+        .vote-bar-container {
+            margin-top: 0.75rem;
+            height: 6px;
+            background: var(--surface-2);
+            border-radius: 3px;
+            overflow: hidden;
+            display: flex;
+        }
+        .vote-bar-yes { background: var(--green); height: 100%; transition: width 0.3s; }
+        .vote-bar-no { background: var(--red); height: 100%; transition: width 0.3s; }
+        .vote-bar-abstain { background: var(--muted); height: 100%; transition: width 0.3s; }
+        .vote-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 0.4rem;
+        }
+
+        /* PROPOSAL DETAIL */
+        .proposal-detail { max-width: 800px; }
+        .proposal-detail h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .proposal-body {
+            color: var(--muted);
+            line-height: 1.7;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        .vote-section {
+            padding: 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        .vote-section h3 { font-size: 1rem; margin-bottom: 1rem; }
+        .vote-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .vote-btn {
+            flex: 1;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .vote-btn:hover { transform: translateY(-2px); }
+        .vote-btn.vote-yes:hover, .vote-btn.vote-yes.selected { 
+            border-color: var(--green); background: rgba(34,197,94,0.1); color: var(--green);
+        }
+        .vote-btn.vote-no:hover, .vote-btn.vote-no.selected {
+            border-color: var(--red); background: rgba(239,68,68,0.1); color: var(--red);
+        }
+        .vote-btn.vote-abstain:hover, .vote-btn.vote-abstain.selected {
+            border-color: var(--amber); background: rgba(245,158,11,0.1); color: var(--amber);
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .info-item {
+            padding: 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        .info-item .label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .info-item .value { font-size: 1.2rem; font-weight: 700; margin-top: 0.25rem; }
+        .info-item .value.green { color: var(--green); }
+        .info-item .value.red { color: var(--red); }
+
+        /* COMMENTS */
+        .comment {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .comment:last-child { border-bottom: none; }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.4rem;
+        }
+        .comment-author { font-weight: 600; font-size: 0.85rem; }
+        .comment-time { font-size: 0.75rem; color: var(--muted); }
+        .comment-body { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--muted);
+        }
+        .empty-state h3 { margin-bottom: 0.5rem; color: var(--text); }
+
+        /* BACK LINK */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+        }
+        .back-link:hover { color: var(--accent); }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--surface);
+            border: 1px solid var(--green);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--green);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+        .toast.show { opacity: 1; }
+        .toast.error { border-color: var(--red); color: var(--red); }
+
+        /* RESPONSIVE */
+        @media (max-width: 640px) {
+            .container { padding: 1rem; }
+            nav { padding: 0.75rem 1rem; }
+            .vote-buttons { flex-direction: column; }
+            .info-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/app.html" class="nav-brand">DAO1</a>
+        <div class="nav-right">
+            <span class="nav-user" id="nav-user"></span>
+            <button class="btn btn-ghost btn-sm" id="nav-auth-btn" onclick="handleAuthBtn()">Join / Sign In</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Auth Screen -->
+        <div id="screen-auth" class="auth-screen">
+            <h1>Welcome to DAO1</h1>
+            <p>Choose a community to participate in governance.</p>
+            
+            <div class="org-picker" id="org-list"></div>
+            
+            <div id="auth-form" class="hidden">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchAuthTab('join')">Join</div>
+                    <div class="tab" onclick="switchAuthTab('login')">Sign In</div>
+                </div>
+                
+                <div id="join-form">
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" id="join-name" placeholder="How should we call you?">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="join-email" placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Choose a PIN (4+ characters)</label>
+                        <input type="password" id="join-pin" placeholder="Your secret PIN">
+                    </div>
+                    <button class="btn btn-primary" onclick="handleJoin()">Join Community</button>
+                </div>
+                
+                <div id="login-form" class="hidden">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="login-email" placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>PIN</label>
+                        <input type="password" id="login-pin" placeholder="Your PIN">
+                    </div>
+                    <button class="btn btn-primary" onclick="handleLogin()">Sign In</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="screen-dashboard" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div>
+                    <h1 id="org-name" style="font-size: 1.5rem;"></h1>
+                    <p id="org-desc" style="color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem;"></p>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="showCreateProposal()">+ New Proposal</button>
+            </div>
+
+            <div class="info-grid" id="org-stats"></div>
+
+            <div class="tabs">
+                <div class="tab active" data-status="active" onclick="filterProposals('active', this)">Active</div>
+                <div class="tab" data-status="passed" onclick="filterProposals('passed', this)">Passed</div>
+                <div class="tab" data-status="failed" onclick="filterProposals('failed', this)">Failed</div>
+                <div class="tab" data-status="" onclick="filterProposals('', this)">All</div>
+            </div>
+
+            <div class="proposal-list" id="proposal-list"></div>
+        </div>
+
+        <!-- Proposal Detail -->
+        <div id="screen-proposal" class="hidden proposal-detail">
+            <div class="back-link" onclick="showDashboard()">← Back to proposals</div>
+            <div id="proposal-content"></div>
+        </div>
+
+        <!-- Create Proposal -->
+        <div id="screen-create" class="hidden">
+            <div class="back-link" onclick="showDashboard()">← Back to proposals</div>
+            <h1 style="font-size: 1.5rem; margin-bottom: 1.5rem;">New Proposal</h1>
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="create-title" placeholder="What are we deciding?">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="create-body" placeholder="Explain the proposal, context, and what happens if it passes..."></textarea>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="create-category">
+                        <option value="general">General</option>
+                        <option value="budget">Budget</option>
+                        <option value="policy">Policy</option>
+                        <option value="election">Election</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Budget Amount ($)</label>
+                    <input type="number" id="create-budget" placeholder="0.00">
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label>Quorum (%)</label>
+                    <input type="number" id="create-quorum" value="50" min="1" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Pass Threshold (%)</label>
+                    <input type="number" id="create-pass" value="51" min="1" max="100">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Voting Closes</label>
+                <input type="datetime-local" id="create-closes">
+            </div>
+            <button class="btn btn-primary" onclick="handleCreateProposal()">Submit Proposal</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    const API = 'https://api.dao1.earth/api';
+    let state = {
+        token: localStorage.getItem('dao1_token'),
+        member: JSON.parse(localStorage.getItem('dao1_member') || 'null'),
+        orgSlug: localStorage.getItem('dao1_org'),
+        org: null,
+        proposals: []
+    };
+
+    // Init
+    async function init() {
+        if (state.token && state.orgSlug) {
+            await loadDashboard();
+        } else {
+            showAuth();
+        }
+        updateNav();
+    }
+
+    function updateNav() {
+        const user = document.getElementById('nav-user');
+        const btn = document.getElementById('nav-auth-btn');
+        if (state.member) {
+            user.textContent = state.member.display_name;
+            btn.textContent = 'Sign Out';
+        } else {
+            user.textContent = '';
+            btn.textContent = 'Join / Sign In';
+        }
+    }
+
+    function handleAuthBtn() {
+        if (state.member) {
+            state.token = null;
+            state.member = null;
+            state.orgSlug = null;
+            localStorage.removeItem('dao1_token');
+            localStorage.removeItem('dao1_member');
+            localStorage.removeItem('dao1_org');
+            showAuth();
+            updateNav();
+        }
+    }
+
+    // Auth
+    async function showAuth() {
+        hideAll();
+        document.getElementById('screen-auth').classList.remove('hidden');
+        const orgs = await api('GET', '/orgs');
+        const list = document.getElementById('org-list');
+        list.innerHTML = orgs.map(o => `
+            <div class="org-card" onclick="selectOrg('${o.slug}', this)">
+                <h3>${o.name}</h3>
+                <p>${o.description || ''}</p>
+            </div>
+        `).join('');
+    }
+
+    let selectedOrg = null;
+    function selectOrg(slug, el) {
+        document.querySelectorAll('.org-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedOrg = slug;
+        document.getElementById('auth-form').classList.remove('hidden');
+    }
+
+    function switchAuthTab(tab) {
+        document.querySelectorAll('.auth-screen .tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('join-form').classList.toggle('hidden', tab !== 'join');
+        document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
+    }
+
+    async function handleJoin() {
+        if (!selectedOrg) return toast('Pick a community first', true);
+        const name = document.getElementById('join-name').value;
+        const email = document.getElementById('join-email').value;
+        const pin = document.getElementById('join-pin').value;
+        if (!name || !pin) return toast('Name and PIN required', true);
+        
+        try {
+            const data = await api('POST', `/orgs/${selectedOrg}/join`, { display_name: name, email, pin });
+            state.token = data.token;
+            state.member = data.member;
+            state.orgSlug = selectedOrg;
+            localStorage.setItem('dao1_token', data.token);
+            localStorage.setItem('dao1_member', JSON.stringify(data.member));
+            localStorage.setItem('dao1_org', selectedOrg);
+            updateNav();
+            await loadDashboard();
+            toast('Welcome to the community!');
+        } catch (e) {
+            toast(e.message, true);
+        }
+    }
+
+    async function handleLogin() {
+        if (!selectedOrg) return toast('Pick a community first', true);
+        const email = document.getElementById('login-email').value;
+        const pin = document.getElementById('login-pin').value;
+        
+        try {
+            const data = await api('POST', `/orgs/${selectedOrg}/login`, { email, pin });
+            state.token = data.token;
+            state.member = data.member;
+            state.orgSlug = selectedOrg;
+            localStorage.setItem('dao1_token', data.token);
+            localStorage.setItem('dao1_member', JSON.stringify(data.member));
+            localStorage.setItem('dao1_org', selectedOrg);
+            updateNav();
+            await loadDashboard();
+            toast('Signed in!');
+        } catch (e) {
+            toast(e.message, true);
+        }
+    }
+
+    // Dashboard
+    async function loadDashboard() {
+        hideAll();
+        document.getElementById('screen-dashboard').classList.remove('hidden');
+        
+        try {
+            state.org = await api('GET', `/orgs/${state.orgSlug}`);
+            document.getElementById('org-name').textContent = state.org.name;
+            document.getElementById('org-desc').textContent = state.org.description || '';
+            
+            document.getElementById('org-stats').innerHTML = `
+                <div class="info-item"><div class="label">Members</div><div class="value">${state.org.stats.member_count}</div></div>
+                <div class="info-item"><div class="label">Active Proposals</div><div class="value">${state.org.stats.active_proposals}</div></div>
+                <div class="info-item"><div class="label">Total Proposals</div><div class="value">${state.org.stats.total_proposals}</div></div>
+            `;
+            
+            await filterProposals('active');
+        } catch (e) {
+            toast('Error loading dashboard: ' + e.message, true);
+        }
+    }
+
+    async function filterProposals(status, tabEl) {
+        if (tabEl) {
+            document.querySelectorAll('#screen-dashboard .tab').forEach(t => t.classList.remove('active'));
+            tabEl.classList.add('active');
+        }
+        
+        const url = status ? `/orgs/${state.orgSlug}/proposals?status=${status}` : `/orgs/${state.orgSlug}/proposals`;
+        state.proposals = await api('GET', url);
+        renderProposals();
+    }
+
+    function renderProposals() {
+        const list = document.getElementById('proposal-list');
+        if (state.proposals.length === 0) {
+            list.innerHTML = '<div class="empty-state"><h3>No proposals yet</h3><p>Be the first to create one!</p></div>';
+            return;
+        }
+        list.innerHTML = state.proposals.map(p => {
+            const total = parseInt(p.yes_count) + parseInt(p.no_count) + parseInt(p.abstain_count);
+            const yesPct = total > 0 ? (parseInt(p.yes_count) / total * 100) : 0;
+            const noPct = total > 0 ? (parseInt(p.no_count) / total * 100) : 0;
+            const abstainPct = total > 0 ? (parseInt(p.abstain_count) / total * 100) : 0;
+            
+            return `
+            <div class="proposal-card" onclick="showProposal('${p.id}')">
+                <div class="proposal-header">
+                    <div>
+                        <div class="proposal-title">${p.title}</div>
+                        <div class="proposal-meta">
+                            by ${p.author_name || 'Unknown'} · ${p.vote_count} vote${p.vote_count != 1 ? 's' : ''} · ${p.comment_count} comment${p.comment_count != 1 ? 's' : ''}
+                            ${p.budget_amount ? ' · $' + Number(p.budget_amount).toLocaleString() : ''}
+                        </div>
+                    </div>
+                    <span class="status-badge status-${p.status}">${p.status}</span>
+                </div>
+                <div class="vote-bar-container">
+                    <div class="vote-bar-yes" style="width: ${yesPct}%"></div>
+                    <div class="vote-bar-no" style="width: ${noPct}%"></div>
+                    <div class="vote-bar-abstain" style="width: ${abstainPct}%"></div>
+                </div>
+                <div class="vote-stats">
+                    <span style="color: var(--green)">✓ ${p.yes_count} yes</span>
+                    <span style="color: var(--red)">✗ ${p.no_count} no</span>
+                    <span>${p.abstain_count} abstain</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // Proposal Detail
+    async function showProposal(id) {
+        hideAll();
+        document.getElementById('screen-proposal').classList.remove('hidden');
+        
+        const p = await api('GET', `/proposals/${id}`);
+        const votesData = await api('GET', `/proposals/${id}/votes`);
+        const comments = await api('GET', `/proposals/${id}/comments`);
+        
+        const total = parseInt(p.yes_count) + parseInt(p.no_count) + parseInt(p.abstain_count);
+        const yesPct = total > 0 ? (parseInt(p.yes_count) / total * 100).toFixed(1) : 0;
+        const noPct = total > 0 ? (parseInt(p.no_count) / total * 100).toFixed(1) : 0;
+        
+        document.getElementById('proposal-content').innerHTML = `
+            <h1>${p.title}</h1>
+            <div class="proposal-meta">
+                by ${p.author_name || 'Unknown'} · ${p.category || 'general'} · 
+                Created ${new Date(p.created_at).toLocaleDateString()}
+                ${p.closes_at ? ' · Closes ' + new Date(p.closes_at).toLocaleDateString() : ''}
+            </div>
+            
+            <div class="proposal-body">${p.body || 'No description provided.'}</div>
+            
+            <div class="info-grid">
+                <div class="info-item"><div class="label">Votes</div><div class="value">${p.vote_count}</div></div>
+                <div class="info-item"><div class="label">Yes</div><div class="value green">${yesPct}%</div></div>
+                <div class="info-item"><div class="label">Quorum</div><div class="value ${p.quorum_met ? 'green' : 'red'}">${Math.round(p.quorum_progress)}%</div></div>
+                ${p.budget_amount ? `<div class="info-item"><div class="label">Budget</div><div class="value">$${Number(p.budget_amount).toLocaleString()}</div></div>` : ''}
+            </div>
+            
+            <div class="vote-bar-container" style="height: 10px;">
+                <div class="vote-bar-yes" style="width: ${yesPct}%"></div>
+                <div class="vote-bar-no" style="width: ${noPct}%"></div>
+            </div>
+            
+            ${p.status === 'active' && state.token ? `
+            <div class="vote-section">
+                <h3>Cast Your Vote</h3>
+                <div class="vote-buttons">
+                    <button class="vote-btn vote-yes" onclick="castVote('${p.id}', 'yes')">👍 Yes</button>
+                    <button class="vote-btn vote-no" onclick="castVote('${p.id}', 'no')">👎 No</button>
+                    <button class="vote-btn vote-abstain" onclick="castVote('${p.id}', 'abstain')">🤷 Abstain</button>
+                </div>
+            </div>
+            ` : ''}
+            
+            <div style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1rem;">Discussion (${comments.length})</h3>
+                ${state.token ? `
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                    <input type="text" id="comment-input" placeholder="Add a comment..." style="flex: 1;">
+                    <button class="btn btn-ghost btn-sm" onclick="addComment('${p.id}')">Post</button>
+                </div>
+                ` : ''}
+                ${comments.length > 0 ? comments.map(c => `
+                    <div class="comment">
+                        <div class="comment-header">
+                            <span class="comment-author">${c.author_name}</span>
+                            <span class="comment-time">${new Date(c.created_at).toLocaleString()}</span>
+                        </div>
+                        <div class="comment-body">${c.body}</div>
+                    </div>
+                `).join('') : '<p style="color: var(--muted); font-size: 0.9rem;">No comments yet.</p>'}
+            </div>
+        `;
+    }
+
+    async function castVote(proposalId, choice) {
+        try {
+            await api('POST', `/proposals/${proposalId}/vote`, { choice });
+            toast(`Vote recorded: ${choice.toUpperCase()}`);
+            await showProposal(proposalId); // Refresh
+        } catch (e) {
+            toast(e.message, true);
+        }
+    }
+
+    async function addComment(proposalId) {
+        const input = document.getElementById('comment-input');
+        const body = input.value.trim();
+        if (!body) return;
+        try {
+            await api('POST', `/proposals/${proposalId}/comments`, { body });
+            input.value = '';
+            toast('Comment posted');
+            await showProposal(proposalId); // Refresh
+        } catch (e) {
+            toast(e.message, true);
+        }
+    }
+
+    // Create Proposal
+    function showCreateProposal() {
+        hideAll();
+        document.getElementById('screen-create').classList.remove('hidden');
+    }
+
+    async function handleCreateProposal() {
+        const title = document.getElementById('create-title').value;
+        if (!title) return toast('Title is required', true);
+        
+        try {
+            await api('POST', `/orgs/${state.orgSlug}/proposals`, {
+                title,
+                body: document.getElementById('create-body').value,
+                category: document.getElementById('create-category').value,
+                budget_amount: document.getElementById('create-budget').value || null,
+                quorum_percent: parseInt(document.getElementById('create-quorum').value) || 50,
+                pass_percent: parseInt(document.getElementById('create-pass').value) || 51,
+                closes_at: document.getElementById('create-closes').value || null
+            });
+            toast('Proposal created!');
+            await loadDashboard();
+        } catch (e) {
+            toast(e.message, true);
+        }
+    }
+
+    function showDashboard() { loadDashboard(); }
+
+    // Utils
+    function hideAll() {
+        ['screen-auth', 'screen-dashboard', 'screen-proposal', 'screen-create']
+            .forEach(id => document.getElementById(id).classList.add('hidden'));
+    }
+
+    async function api(method, path, body) {
+        const opts = {
+            method,
+            headers: { 'Content-Type': 'application/json' }
+        };
+        if (state.token) opts.headers['Authorization'] = `Bearer ${state.token}`;
+        if (body) opts.body = JSON.stringify(body);
+        
+        const res = await fetch(API + path, opts);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Request failed');
+        return data;
+    }
+
+    function toast(msg, error = false) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className = 'toast show' + (error ? ' error' : '');
+        setTimeout(() => el.className = 'toast', 3000);
+    }
+
+    init();
+    </script>
+</body>
+</html>
